@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
@@ -72,8 +71,7 @@ export default function SignUp() {
         fid: '',
         gender: '',
         dob: '',
-        phoneNumber: '',
-        image: null
+        phoneNumber: ''
     })
     document.title = 'SmartCam - Sign up';
 
@@ -164,8 +162,6 @@ export default function SignUp() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const imageInput = document.getElementById('image');
-        const imageFile = imageInput.files[0];
 
         const formData = new FormData();
         formData.append('name', user.name);
@@ -175,27 +171,24 @@ export default function SignUp() {
         formData.append('gender', user.gender);
         formData.append('dob', user.dob);
         formData.append('phone', user.phoneNumber);
-        formData.append('image', imageFile);
 
         if (validateInputs()) {
-            fetch(`${facultyURL}/register`,
-                {
-                    method: 'POST',
-                    body: formData,
-                    credentials: 'include'
-                })
-                .then(response => response.json())
-                .then((data) => {
-                    console.log(data);
-                    if (data.status === 201) {
-                        console.log('Logged in successfully');
-                        window.location.href = '/';
-                    } else {
-                        console.log('Login failed');
-                    }
-                })
-                .catch(error => console.log('Error:', error)
-                )
+            fetch(`${facultyURL}/register`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then((data) => {
+                if (data.status === 201) {
+                    console.log('Logged in successfully');
+                    window.location.href = '/';
+                } else {
+                    console.log('Login failed');
+                }
+            })
+            .catch(error => console.log('Error:', error)
+            )
         }
     };
 
@@ -248,13 +241,6 @@ export default function SignUp() {
                                 <TextField autoComplete="phoneNumber" name="phoneNumber" required fullWidth id="phoneNumber" placeholder="+1 2345678900"
                                     error={phoneError} helperText={phoneErrorMessage} color={phoneError ? 'error' : 'primary'} onChange={handleChange} />
                             </FormControl>
-                            <FormControl>
-                                <FormLabel htmlFor='image'>Upload your image</FormLabel>
-                                <input type='file' id='image' name='image' accept='image/*' onChange={handleChange} />
-                            </FormControl>
-                            <Button type="submit" fullWidth variant="contained" onClick={handleSubmit}>
-                                Sign up
-                            </Button>
                             <Divider>
                                 <Typography sx={{ color: 'text.secondary' }}>or</Typography>
                             </Divider>
