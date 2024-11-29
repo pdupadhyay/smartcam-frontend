@@ -44,5 +44,8 @@
   },
   "devDependencies": {
     "ajv": "^7.2.4"
+  },
+  "overrides": {
+    "typescript": "0.0.0"
   }
 }
