@@ -1,5 +1,5 @@
-const facultyURL = 'http://localhost:5050/api/faculty';
-const adminURL = 'http://localhost:5050/api/admin';
-const baseURL = 'http://localhost:5050/api';
+const facultyURL = 'https://smartcam-backend-1.onrender.com/api/faculty';
+const adminURL = 'https://smartcam-backend-1.onrender.com/api/admin';
+const baseURL = 'https://smartcam-backend-1.onrender.com/api';
 
 export { facultyURL, adminURL, baseURL };
