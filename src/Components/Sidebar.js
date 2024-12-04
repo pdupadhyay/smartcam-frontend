@@ -1,9 +1,8 @@
 import styled from "@emotion/styled";
 import { List, ListItem, ListItemButton, ListItemText, Stack, Typography } from "@mui/material";
 import logo from './../Content/Logo.png';
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { jwtDecode } from 'jwt-decode';
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { baseURL } from "../constants";
 
 const SidebarContainer = styled(Stack)(({ theme }) => ({
@@ -21,6 +20,7 @@ const Sidebar = ({ userName, setUserName, children }) => {
     const [currentTab, setCurrentTab] = useState('Home');
     const navigate = useNavigate();
     const facultyId = localStorage.getItem('id');
+    const location = useLocation();
 
     const handleClick = (tabText, url) => {
         if (tabText === "Logout") {
@@ -45,25 +45,35 @@ const Sidebar = ({ userName, setUserName, children }) => {
         navigate(url ? `/${url}` : '/');
     }
 
-    let sidebarListItem = [
-        { text: 'Login', url: 'login' }
-    ]
-    if (localStorage.getItem('role') === 'faculty') {
-        sidebarListItem = [
-            { text: 'Home', url: `faculty/${facultyId}/dashboard` },
-            { text: 'Request Leave', url: `faculty/${facultyId}/requestleave` },
-            { text: 'Profile', url: `faculty/${facultyId}/profile` },
-            { text: `Logout`, url: `` }
-        ];
-    } else if (localStorage.getItem('role') === 'admin') {
-        sidebarListItem = [
-            { text: 'Home', url: `admin/dashboard` },
-            { text: 'Manage Users', url: 'admin/manageUsers' },
-            { text: 'Attendance', url: 'admin/attendance' },
-            { text: 'Leave Requests', url: 'admin/leave-requests/pending' },
-            { text: `Logout`, url: '' }
-        ]
-    }
+    const sidebarListItem = useMemo(() => {
+        let items = [{ text: 'Login', url: 'login' }];
+        if (localStorage.getItem('role') === 'faculty') {
+            items = [
+                { text: 'Home', url: `faculty/${facultyId}/dashboard` },
+                { text: 'Request Leave', url: `faculty/${facultyId}/requestleave` },
+                { text: 'Profile', url: `faculty/${facultyId}/profile` },
+                { text: `Logout`, url: `` }
+            ];
+        } else if (localStorage.getItem('role') === 'admin') {
+            items = [
+                { text: 'Home', url: `admin/dashboard` },
+                { text: 'Manage Users', url: 'admin/manage-users' },
+                { text: 'Attendance', url: 'admin/attendance' },
+                { text: 'Leave Requests', url: 'admin/leave-requests/pending' },
+                { text: `Logout`, url: '' }
+            ];
+        }
+        return items;
+    }, [facultyId]);
+
+
+    useEffect(() => {
+        const currentPath = location.pathname.split('/').slice(1).join('/');
+        const matchedItem = sidebarListItem.find(item => item.url === currentPath);
+        if (matchedItem) {
+            setCurrentTab(matchedItem.text);
+        }
+    }, [location, sidebarListItem]);
 
     return (
         <div style={{ display: 'flex' }}>

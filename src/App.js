@@ -10,6 +10,7 @@ import { useState } from "react";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, Stack, styled } from "@mui/material";
 import LeaveRequests from "./Components/Admin/LeaveRequests";
+import ManageUsers from "./Components/Admin/ManageUsers";
 
 const AppContainer = styled(Stack)(({ theme }) => ({
   height: '100%',
@@ -44,7 +45,7 @@ function App() {
             <Route path="/faculty/:facultyId/profile" element={<Sidebar userName={userName} setUserName={setUserName}><Profile /></Sidebar>} />
 
             <Route path="/admin/dashboard" element={<Sidebar userName={userName} setUserName={setUserName}></Sidebar>} />
-            <Route path="/admin/manageUsers" element={<Sidebar userName={userName} setUserName={setUserName}></Sidebar>} />
+            <Route path="/admin/manage-users" element={<Sidebar userName={userName} setUserName={setUserName}><ManageUsers/></Sidebar>} />
             <Route path="/admin/attendance" element={<Sidebar userName={userName} setUserName={setUserName}></Sidebar>} />
             <Route path="/admin/leave-requests/pending" element={<Sidebar userName={userName} setUserName={setUserName}><LeaveRequests/></Sidebar>} />
           </Routes>

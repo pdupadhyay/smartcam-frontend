@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { adminURL } from '../../constants';
-import { Container, Typography, TableContainer, Table, TableBody, Paper, TableRow, TableCell, TableFooter, TablePagination, Button, TableHead, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { Container, Typography, TableContainer, Table, TableBody, Paper, TableRow, TableCell, TableFooter, TablePagination, Button, TableHead, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Backdrop, CircularProgress } from '@mui/material';
 import TablePaginationActions from '@mui/material/TablePagination/TablePaginationActions';
 
 const LeaveRequests = () => {
@@ -10,6 +10,7 @@ const LeaveRequests = () => {
     const [rows, setRows] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [loading, setLoading] = useState(true);
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
     // Fetch notifications from API
@@ -23,13 +24,16 @@ const LeaveRequests = () => {
         });
         const data = await response.json();
         setLeaveRequests(data);
+        setLoading(false);
     }
 
     useEffect(() => {
+        document.title = 'Leave Requests';
         fetchNotifications();
     }, []);
 
     const handleApprove = async (leaveId) => {
+        setLoading(true);
         const response = await fetch(`${adminURL}/leave/${leaveId}`, {
             method: 'PUT',
             headers: {
@@ -42,8 +46,10 @@ const LeaveRequests = () => {
         setMessage(data.message);
         setOpen(true);
         fetchNotifications();
+        setLoading(false);
     }
     const handleReject = async (leaveId) => {
+        setLoading(true);
         const response = await fetch(`${adminURL}/leave/${leaveId}`, {
 
             method: 'PUT',
@@ -57,6 +63,7 @@ const LeaveRequests = () => {
         setMessage(data.message);
         setOpen(true);
         fetchNotifications();
+        setLoading(false);
     }
 
     const handleChangePage = (event, newPage) => {
@@ -73,6 +80,13 @@ const LeaveRequests = () => {
             <Typography component="h1" variant="h4" color='white' padding={2}>
                 Leave Requests
             </Typography>
+
+            <Backdrop
+                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 500 }} aria-label="custom pagination table" stickyHeader>
                     <TableHead>
