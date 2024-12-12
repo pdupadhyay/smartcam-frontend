@@ -11,9 +11,10 @@ import { ThemeProvider } from "@emotion/react";
 import { createTheme, Stack, styled } from "@mui/material";
 import LeaveRequests from "./Components/Admin/LeaveRequests";
 import ManageUsers from "./Components/Admin/ManageUsers";
+import AdminDashboard from "./Components/Admin/AdminDashboard";
 
 const AppContainer = styled(Stack)(({ theme }) => ({
-  height: '100%',
+  minHeight: '100vh',
   padding: 4,
   margin: 'auto',
   backgroundColor: '#0c1017',
@@ -29,6 +30,11 @@ const AppContainer = styled(Stack)(({ theme }) => ({
   }),
 }))
 
+const Body = styled(Stack)(({ theme }) => ({
+  marginLeft: '18%', // Adjust for sidebar width
+  display: 'flex',
+}));
+
 function App() {
   const [userName, setUserName] = useState(localStorage.getItem('userName') || null);
   const defaultTheme = createTheme({ palette: { mode: 'dark' } });
@@ -40,14 +46,14 @@ function App() {
             <Route path='/signup' element={<SignUp />} />
             <Route path='/' element={<Login />} />
 
-            <Route path='/faculty/:facultyId/dashboard' element={<Sidebar userName={userName} setUserName={setUserName}><Dashboard /></Sidebar>} />
-            <Route path='/faculty/:facultyId/requestleave' element={<Sidebar userName={userName} setUserName={setUserName}><RequestLeave /></Sidebar>} />
-            <Route path="/faculty/:facultyId/profile" element={<Sidebar userName={userName} setUserName={setUserName}><Profile /></Sidebar>} />
+            <Route path='/faculty/:facultyId/dashboard' element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><Dashboard /></div></Body>} />
+            <Route path='/faculty/:facultyId/requestleave' element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><RequestLeave /></div></Body>} />
+            <Route path="/faculty/:facultyId/profile" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><Profile /></div></Body>} />
 
-            <Route path="/admin/dashboard" element={<Sidebar userName={userName} setUserName={setUserName}></Sidebar>} />
-            <Route path="/admin/manage-users" element={<Sidebar userName={userName} setUserName={setUserName}><ManageUsers/></Sidebar>} />
-            <Route path="/admin/attendance" element={<Sidebar userName={userName} setUserName={setUserName}></Sidebar>} />
-            <Route path="/admin/leave-requests/pending" element={<Sidebar userName={userName} setUserName={setUserName}><LeaveRequests/></Sidebar>} />
+            <Route path="/admin/dashboard" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><AdminDashboard /></div></Body>} />
+            <Route path="/admin/manage-users" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><ManageUsers /></div></Body>} />
+            <Route path="/admin/attendance" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}></div></Body>} />
+            <Route path="/admin/leave-requests/pending" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><LeaveRequests /></div></Body>} />
           </Routes>
         </Router>
       </AppContainer>

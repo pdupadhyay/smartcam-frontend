@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { Button, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import bgimage from './../Content/BG.png'
 import { facultyURL } from '../constants';
 
@@ -71,7 +71,7 @@ export default function SignUp() {
         fid: '',
         gender: '',
         dob: '',
-        phoneNumber: ''
+        phone: ''
     })
     document.title = 'SmartCam - Sign up';
 
@@ -89,9 +89,9 @@ export default function SignUp() {
         const dob = user.dob;
         const phone = user.phoneNumber
 
-        let isValid = false;
+        let isValid = true;
 
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
             setEmailError(true);
             setEmailErrorMessage('Please enter a valid email address.');
             isValid = false;
@@ -100,7 +100,7 @@ export default function SignUp() {
             setEmailErrorMessage('');
         }
 
-        if (!password.value || password.value.length < 6) {
+        if (!password || password.length < 6) {
             setPasswordError(true);
             setPasswordErrorMessage('Password must be at least 6 characters long.');
             isValid = false;
@@ -109,7 +109,7 @@ export default function SignUp() {
             setPasswordErrorMessage('');
         }
 
-        if (!name.value || name.value.length < 1) {
+        if (!name || name.length < 1) {
             setNameError(true);
             setNameErrorMessage('Name is required.');
             isValid = false;
@@ -118,7 +118,7 @@ export default function SignUp() {
             setNameErrorMessage('');
         }
 
-        if (!fid.value || fid.value.length < 1) {
+        if (!fid || fid.length < 1) {
             setFidError(true);
             setFidErrorMessage('Faculty ID is required.');
             isValid = false;
@@ -127,7 +127,7 @@ export default function SignUp() {
             setFidError(false);
             setFidErrorMessage('');
         }
-        if (!gender.value || gender.value.length < 1) {
+        if (!gender || gender.length < 1) {
             setGenderError(true);
             setGenderErrorMessage
                 ('Gender is required.');
@@ -137,7 +137,7 @@ export default function SignUp() {
             setGenderError(false);
             setGenderErrorMessage('');
         }
-        if (!dob.value || dob.value.length < 1) {
+        if (!dob || dob.length < 1) {
             setDobError(true);
             setDobErrorMessage('Date of Birth is required.');
             isValid = false;
@@ -146,7 +146,7 @@ export default function SignUp() {
             setDobError(false);
             setDobErrorMessage('');
         }
-        if (!phone.value || phone.value.length < 1) {
+        if (!phone || phone.length < 1) {
             setPhoneError(true);
             setPhoneErrorMessage('Phone Number is required.');
             isValid = false;
@@ -160,35 +160,30 @@ export default function SignUp() {
         return isValid;
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const formData = new FormData();
-        formData.append('name', user.name);
-        formData.append('email', user.email);
-        formData.append('password', user.password);
-        formData.append('fid', user.fid);
-        formData.append('gender', user.gender);
-        formData.append('dob', user.dob);
-        formData.append('phone', user.phoneNumber);
-
         if (validateInputs()) {
-            fetch(`${facultyURL}/register`, {
-                method: 'POST',
-                body: formData,
-                credentials: 'include'
-            })
-            .then(response => response.json())
-            .then((data) => {
-                if (data.status === 201) {
-                    console.log('Logged in successfully');
+            try {
+                const response = await fetch(`${facultyURL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                    credentials: 'include'
+                })
+                const data = await response.json();
+                if(response.status === 201){
                     window.location.href = '/';
-                } else {
-                    console.log('Login failed');
                 }
-            })
-            .catch(error => console.log('Error:', error)
-            )
+                else{
+                    console.log('Signup failed');
+                }
+            }
+            catch (error) {
+                console.error('Error:', error);
+            }
         }
     };
 
@@ -252,6 +247,10 @@ export default function SignUp() {
                                     </Link>
                                 </span>
                             </Typography>
+
+                            <Button type="submit" fullWidth variant="contained" onClick={handleSubmit}>
+                                Sign up
+                            </Button>
                         </Box>
 
                     </Card>

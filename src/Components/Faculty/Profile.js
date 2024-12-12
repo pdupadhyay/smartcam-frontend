@@ -1,4 +1,4 @@
-import { FormControl, Typography, Box, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Button, Divider, Link, createTheme, ThemeProvider, styled, Stack } from "@mui/material";
+import { FormControl, Typography, Box, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Button, Divider, Link, createTheme, ThemeProvider, styled, Stack, Modal } from "@mui/material";
 import { useEffect, useState } from "react";
 import MuiCard from '@mui/material/Card';
 import { facultyURL } from "../../constants";
@@ -39,15 +39,66 @@ const Card = styled(MuiCard)(({ theme }) => ({
     }),
 }));
 
-const Popup = ({ message, onClose }) => (
-    <div style={{
-        position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', padding: '20px', backgroundColor: 'black',
-        boxShadow: '0 0 10px rgba(0,0,0,0.5)', zIndex: 1000, textAlign: 'center', color: 'white', fontFamily: 'cursive'
-    }}>
-        <p>{message}</p>
-        <button onClick={onClose}>Close</button>
-    </div>
+const Popup = ({ open, message, onClose }) => (
+    <Modal open={open} onClose={onClose}>
+        <Box sx={{fontFamily: 'cursive', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, 
+        bgcolor: 'background.paper', boxShadow: 24, p: 2, textAlign:'center'
+        }}>
+            <p>{message}</p>
+            <Button onClick={onClose} >Close</Button>
+        </Box>
+    </Modal>
 );
+
+
+const PasswordChangePopup = ({ open, onClose, onSubmit }) => {
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+        onSubmit(password);
+    }
+
+    return (
+        <Modal open={open} onClose={onClose}>
+            <Box sx={{
+                position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4,
+            }}>
+                <Typography variant="h6" component="h2">
+                    Change Password
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+                    <TextField
+                        fullWidth
+                        label="New Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Confirm Password"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    {error && <Typography color="error">{error}</Typography>}
+                    <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: '2vh' }}>
+                        Change Password
+                    </Button>
+                </Box>
+            </Box>
+        </Modal>
+    );
+}
 
 const Profile = () => {
     const [user, setUser] = useState(
@@ -58,25 +109,14 @@ const Profile = () => {
             fid: '',
             gender: '',
             dob: '',
-            phoneNumber: '',
-            image: null
+            phoneNumber: ''
         }
     )
     const defaultTheme = createTheme({ palette: { mode: 'dark' } });
-    const [image, setImage] = useState(null)
-    const [nameError, setNameError] = useState(false);
-    const [nameErrorMessage, setNameErrorMessage] = useState('');
-    const [fidError, setFidError] = useState(false);
-    const [fidErrorMessage, setFidErrorMessage] = useState('');
-    const [dobError, setDobError] = useState(false);
-    const [dobErrorMessage, setDobErrorMessage] = useState('');
     const [phoneError, setPhoneError] = useState(false);
     const [phoneErrorMessage, setPhoneErrorMessage] = useState('');
-    const [genderError, setGenderError] = useState(false);
-    const [genderErrorMessage, setGenderErrorMessage] = useState('');
-    const [imageError, setImageError] = useState(false);
-    const [imageErrorMessage, setImageErrorMessage] = useState('');
     const [popupMessage, setPopupMessage] = useState('');
+    const [passwordPopupOpen, setPasswordPopupOpen] = useState(false);
 
     useEffect(() => {
         fetch(`${facultyURL}/profile`,
@@ -96,8 +136,7 @@ const Profile = () => {
                     gender: data.gender,
                     dob: data.dob,
                     phoneNumber: data.phone,
-                    password: data.password,
-                    image: data.profilePicturePath
+                    password: data.password
                 }
                 setUser(filteredData);
             })
@@ -117,16 +156,13 @@ const Profile = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    email: user.email,
                     phone: user.phoneNumber,
-                    dob: user.dob,
-                    gender: user.gender
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.message === "Profile updated successfully") {
-                    setPopupMessage('Profile updated successfully.');
+                    setPopupMessage(data.message);
                 } else {
                     setPopupMessage('Failed to update profile. Please try again.');
                 }
@@ -137,10 +173,29 @@ const Profile = () => {
             });
     }
 
+    const handlePasswordChange = async (newPassword) => {
+        const response = await fetch(`${facultyURL}/changePassword`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    newPassword: newPassword,
+                })
+            })
+            if(response.status === 200){
+                setPopupMessage('Password changed successfully');
+            } else {
+                setPopupMessage('Failed to update password. Please try again.');
+            }
+            setPasswordPopupOpen(false);
+    }
+
     return (
         <ThemeProvider theme={defaultTheme}>
             <ProfileContainer direction="column" justifyContent="space-between">
-                {popupMessage && <Popup message={popupMessage} onClose={() => setPopupMessage('')} />}
                 <Stack sx={{ justifyContent: 'center', height: '100%', p: 2, }}>
                     <Card variant="outlined">
                         <Typography component="h1" variant="h4" sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', color: 'white' }}>
@@ -149,8 +204,7 @@ const Profile = () => {
                         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, color: 'inherit' }} >
                             <FormControl >
                                 <FormLabel htmlFor="name" sx={{ color: 'white' }}>Full name</FormLabel>
-                                <TextField autoComplete="name" name="name" required fullWidth id="name" placeholder="Full Name" value={user.name}
-                                    error={nameError} helperText={nameErrorMessage} color={nameError ? 'error' : 'primary'} onChange={handleChange} />
+                                <TextField autoComplete="name" name="name" required fullWidth id="name" placeholder="Full Name" value={user.name} slotProps={{ input: { readOnly: true } }} />
                             </FormControl>
                             <FormControl>
                                 <FormLabel htmlFor="email" sx={{ color: 'white' }}>Email</FormLabel>
@@ -158,22 +212,19 @@ const Profile = () => {
                             </FormControl>
                             <FormControl>
                                 <FormLabel htmlFor="fid" sx={{ color: 'white' }}>Faculty ID</FormLabel>
-                                <TextField autoComplete="fid" name="fid" required fullWidth id="fid" placeholder="Faculty ID/UID" value={user.fid}
-                                    error={fidError} helperText={fidErrorMessage} color={fidError ? 'error' : 'primary'} onChange={handleChange} slotProps={{ input: { readOnly: true } }} />
+                                <TextField autoComplete="fid" name="fid" required fullWidth id="fid" placeholder="Faculty ID/UID" value={user.fid} slotProps={{ input: { readOnly: true } }} />
                             </FormControl>
-                            <FormControl error={genderError}>
+                            <FormControl>
                                 <FormLabel htmlFor="gender">Gender</FormLabel>
-                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="gender" id='gender' value={user.gender} onChange={handleChange}>
+                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="gender" id='gender' value={user.gender} slotProps={{ input: { readOnly: true } }}>
                                     <FormControlLabel value="Male" control={<Radio />} label="Male" />
                                     <FormControlLabel value="Female" control={<Radio />} label="Female" />
                                     <FormControlLabel value="Other" control={<Radio />} label="Other" />
                                 </RadioGroup>
-                                {genderError && <Typography color="error">{genderErrorMessage}</Typography>}
                             </FormControl>
                             <FormControl>
                                 <FormLabel htmlFor="dob" sx={{ color: 'white' }}>Date of Birth</FormLabel>
-                                <TextField type="date" autoComplete="dob" name="dob" required fullWidth id="dob" placeholder="Date of Birth" value={user.dob}
-                                    error={dobError} helperText={dobErrorMessage} color={dobError ? 'error' : 'primary'} onChange={handleChange} />
+                                <TextField type="date" autoComplete="dob" name="dob" required fullWidth id="dob" placeholder="Date of Birth" value={user.dob} slotProps={{ input: { readOnly: true } }} />
                             </FormControl>
                             <FormControl>
                                 <FormLabel htmlFor="phoneNumber" sx={{ color: 'white' }}>Phone Number</FormLabel>
@@ -181,15 +232,21 @@ const Profile = () => {
                                     error={phoneError} helperText={phoneErrorMessage} color={phoneError ? 'error' : 'primary'} onChange={handleChange} />
                             </FormControl>
                         </Box>
-                        <Button type="submit" fullWidth variant="contained" onClick={handleSubmit}>
+                        <Button type="submit" sx={{ marginTop: '2vh' }} fullWidth variant="contained" onClick={handleSubmit}>
                             Update Profile
+                        </Button>
+                        <Button sx={{ marginTop: '2vh' }} fullWidth variant="outlined" onClick={() => setPasswordPopupOpen(true)}>
+                            Change Password
                         </Button>
                     </Card>
                 </Stack>
-                {/* <FormLabel htmlFor='image' sx={{ color: 'white' }}>Upload your image</FormLabel>
-                        <input type='file' id='image' name='image' accept='image/*' onChange={handleChange} />
-                    </FormControl> */}
             </ProfileContainer>
+            <PasswordChangePopup 
+                open={passwordPopupOpen}
+                onClose={() => setPasswordPopupOpen(false)}
+                onSubmit={handlePasswordChange}
+            />
+            <Popup open={popupMessage !== ''} message={popupMessage} onClose={() => setPopupMessage('')} />
         </ThemeProvider>
     )
 }

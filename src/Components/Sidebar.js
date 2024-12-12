@@ -9,6 +9,9 @@ const SidebarContainer = styled(Stack)(({ theme }) => ({
     width: '18%',
     height: '100vh',
     display: 'flex',
+    position: 'fixed',
+    left: 0,
+    top: 0,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -77,9 +80,9 @@ const Sidebar = ({ userName, setUserName, children }) => {
 
     return (
         <div style={{ display: 'flex' }}>
-            <SidebarContainer direction="column" justifyContent="space-between" textAlign="center">
+            <SidebarContainer direction="column" justifyContent="center" textAlign="center">
                 <img src={logo} alt="Logo" style={{ marginTop: '2vh', height: '15vh', width: '10vw', cursor: 'pointer' }} onClick={() => navigate('/')}></img>
-                {userName ? (<Typography component='h4' variant="h1" sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', color: 'white' }}>Hi {userName}</Typography>)
+                {userName ? (<Typography component='h4' variant="h1" sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', color: 'white' }}>Hi, {userName}</Typography>)
                     : ''}
                 <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'center', color: 'white' }}>
                     <List >

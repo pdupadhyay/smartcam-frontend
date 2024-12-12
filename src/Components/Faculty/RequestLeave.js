@@ -46,7 +46,7 @@ const RequestLeave = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ m: 2 }}>
+        <Container maxWidth="lg" sx={{ m: 2, alignContent: 'center' }}>
             <Typography component="h1" variant="h4" textAlign={"center"}>
                 Request Leave
             </Typography>

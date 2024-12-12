@@ -1,8 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
@@ -12,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { createTheme, styled } from '@mui/material/styles';
-import ForgotPassword from './ForgotPassword';
 import { ThemeProvider } from '@emotion/react';
 import { useState } from 'react';
 import bgimage from './../Content/BG.png'
@@ -78,22 +75,12 @@ export default function SignIn(props) {
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-    const [open, setOpen] = useState(false);
     const defaultTheme = createTheme({ palette: { mode: 'dark' } });
     const [errorMessage, setErrorMessage] = useState('');
     const [userCredentials, setUserCredentials] = useState({
         email: '',
         password: ''
     })
-
-    const handleClickOpen = (event) => {
-        event.preventDefault();
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -119,15 +106,14 @@ export default function SignIn(props) {
                     localStorage.setItem('role', data.role);
                     localStorage.setItem('userName', data.name);
                     localStorage.setItem('id', data.fid);
-                    window.location.href = `/faculty/${data.fid}/dashboard/`;
+                    if(data.role === 'faculty') window.location.href = `/${data.role}/${data.fid}/dashboard/`;
+                    else window.location.href = `/${data.role}/dashboard/`;
                 } else {
-                    console.log('Login failed');
-                    setErrorMessage('Login failed. Please check your credentials and try again.');
+                    setErrorMessage(data.message);
                 }
             })
             .catch(error => {
-                console.log('Error:', error);
-                setErrorMessage('Login failed. Please check your credentials and try again.');
+                setErrorMessage(error.message);
             })
     };
 
@@ -183,20 +169,12 @@ export default function SignIn(props) {
                         <FormControl>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <FormLabel htmlFor="password">Password</FormLabel>
-                                <Link component="button" onClick={handleClickOpen} variant="body2" sx={{ alignSelf: 'baseline' }}>
-                                    Forgot your password?
-                                </Link>
                             </Box>
                             <TextField error={passwordError} helperText={passwordErrorMessage} name="password" placeholder="Password"
                                 type="password" id="password" autoComplete="current-password" autoFocus required fullWidth
                                 variant="outlined" color={passwordError ? 'error' : 'primary'} onChange={handleChange} />
                         </FormControl>
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
-                        <ForgotPassword open={open} handleClose={handleClose} />
-                        <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
+                        <Button type="submit" fullWidth variant="contained" sx={{marginTop: '2vh'}} onClick={validateInputs}>
                             Sign in
                         </Button>
                         <Divider>or</Divider>

@@ -23,6 +23,7 @@ const LeaveRequests = () => {
             credentials: 'include',
         });
         const data = await response.json();
+        console.log(data);
         setLeaveRequests(data);
         setLoading(false);
     }
@@ -104,7 +105,7 @@ const LeaveRequests = () => {
                             ? leaveRequests.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : leaveRequests
                         ).map((row) => (
-                            <TableRow key={row.name}>
+                            <TableRow key={row._id}>
                                 <TableCell component="th" scope="row">
                                     {row.faculty_id}
                                 </TableCell>
