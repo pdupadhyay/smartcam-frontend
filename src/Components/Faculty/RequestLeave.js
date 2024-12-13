@@ -46,7 +46,7 @@ const RequestLeave = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ m: 2, alignContent: 'center' }}>
+        <Container sx={{ my: 5, alignContent: 'center' }}>
             <Typography component="h1" variant="h4" textAlign={"center"}>
                 Request Leave
             </Typography>
@@ -82,7 +82,7 @@ const RequestLeave = () => {
                     error={errors.leaveReason}
                     helperText={errors.leaveReason ? 'Reason is required' : ''}
                 />
-                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }} >Submit</Button>
+                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 5 }} >Submit</Button>
             </form>
             <Dialog
                 open={open}

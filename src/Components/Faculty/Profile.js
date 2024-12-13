@@ -1,4 +1,4 @@
-import { FormControl, Typography, Box, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Button, Divider, Link, createTheme, ThemeProvider, styled, Stack, Modal } from "@mui/material";
+import { FormControl, Typography, Box, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Button, createTheme, ThemeProvider, styled, Stack, Modal } from "@mui/material";
 import { useEffect, useState } from "react";
 import MuiCard from '@mui/material/Card';
 import { facultyURL } from "../../constants";

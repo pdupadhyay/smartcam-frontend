@@ -77,8 +77,8 @@ const LeaveRequests = () => {
     };
 
     return (
-        <Container maxWidth='full' sx={{ m: 2, textAlign: 'center' }}>
-            <Typography component="h1" variant="h4" color='white' padding={2}>
+        <Container maxWidth='full' sx={{ my: 4, textAlign: 'center' }}>
+            <Typography component="h1" variant="h4" color='white' padding={3}>
                 Leave Requests
             </Typography>
 
@@ -107,7 +107,7 @@ const LeaveRequests = () => {
                         ).map((row) => (
                             <TableRow key={row._id}>
                                 <TableCell component="th" scope="row">
-                                    {row.faculty_id}
+                                    {row.faculty.name}
                                 </TableCell>
                                 <TableCell style={{ width: 160 }} align="right">
                                     {row.fromDate}

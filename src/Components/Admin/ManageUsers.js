@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { adminURL } from '../../constants';
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Alert, Backdrop, Button, Card, CardContent, CardHeader, CardMedia, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Typography } from '@mui/material';
+import { Alert, Backdrop, CircularProgress, Container, Divider, List, ListItem, ListItemText, Stack, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [expanded, setExpanded] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const navigate = useNavigate();
 
     const fetchUsers = async () => {
         try {
@@ -37,16 +37,15 @@ const ManageUsers = () => {
         fetchUsers();
     }, []);
 
-    const handleDeleteUser = (user) => {
-        alert('Delete user');
 
-        setOpen(false);
-        fetchUsers();
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
     };
 
-    const handleChange = (panel) => (event, isExpanded) => {
-        setExpanded(isExpanded ? panel : false);
-    }
+    const filteredUsers = users.filter(user =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     if (error) {
         return (
@@ -60,6 +59,14 @@ const ManageUsers = () => {
     return (
         <Container sx={{ marginY: '2vh' }}>
             <Typography paddingY='2vh' textAlign='center' variant="h4" color='white'>Manage Users</Typography>
+            <TextField
+                fullWidth
+                label="Search Faculty"
+                variant="outlined"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                sx={{ marginBottom: '2vh' }}
+            />
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
                 open={loading}
@@ -67,65 +74,26 @@ const ManageUsers = () => {
                 <CircularProgress color="inherit" />
             </Backdrop>
 
-            {users.map((user) => (
-                <Accordion key={user.fid} expanded={expanded === user.fid} onChange={handleChange(user.fid)}>
-                    <AccordionSummary
-                        aria-controls={`panel${user.fid}a-content`}
-                        id={`panel${user.fid}a-header`}>
-                        <Typography sx={{ width: '33%', flexShrink: 0 }}>{user.name}</Typography>
-                        <Typography sx={{ color: 'text.secondary' }}>{user.email}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Card sx={{ display: 'flex' }}>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Typography component="div" variant="h5">
-                                    {user.name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {user.email}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {user.dob}
-                                </Typography>
-
-                                <Typography variant="body2" color="text.secondary">
-                                    {user.gender}
-                                </Typography>
-                            </CardContent>
-                            <CardMedia
-                                component="img"
-                                sx={{ width: 151 }}
-                                image={user.profilePicturePath}
-                                alt={user.name}
-                            />
-                        </Card>
-                    </AccordionDetails>
-                    <AccordionActions>
-                        <Button size="small" onClick={() => { setOpen(true); setMessage(`Are you sure you want to delete ${user.name}?`) }}>Delete</Button>
-                    </AccordionActions>
-                </Accordion>
-            ))}
-
-            <Dialog
-                open={open}
-                onClose={() => setOpen(false)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        {message}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpen(false)}>No</Button>
-                    <Button onClick={handleDeleteUser} autoFocus>
-                        Yes
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                {filteredUsers.map((item) => (
+                    <ListItem key={item.fid} alignItems="flex-start" sx={{ cursor: 'pointer' }} onClick={() => navigate(`/admin/faculty/${item.fid}`)}>
+                        <ListItemText
+                            primary={item.name}
+                            secondary={
+                                <React.Fragment>
+                                    <Typography
+                                        component="span"
+                                        variant="body2"
+                                        sx={{ color: 'text.primary', display: 'inline' }}
+                                    >{item.email}
+                                    </Typography>
+                                </React.Fragment>
+                            }
+                        />
+                        <Divider variant="inset" component="li" />
+                    </ListItem>
+                ))}
+            </List>
         </Container>
     );
 }

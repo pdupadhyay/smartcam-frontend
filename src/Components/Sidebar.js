@@ -61,7 +61,6 @@ const Sidebar = ({ userName, setUserName, children }) => {
             items = [
                 { text: 'Home', url: `admin/dashboard` },
                 { text: 'Manage Users', url: 'admin/manage-users' },
-                { text: 'Attendance', url: 'admin/attendance' },
                 { text: 'Leave Requests', url: 'admin/leave-requests/pending' },
                 { text: `Logout`, url: '' }
             ];

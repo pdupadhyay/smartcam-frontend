@@ -12,6 +12,7 @@ import { createTheme, Stack, styled } from "@mui/material";
 import LeaveRequests from "./Components/Admin/LeaveRequests";
 import ManageUsers from "./Components/Admin/ManageUsers";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
+import FacultyDetails from "./Components/Admin/FacultyDetails";
 
 const AppContainer = styled(Stack)(({ theme }) => ({
   minHeight: '100vh',
@@ -52,8 +53,8 @@ function App() {
 
             <Route path="/admin/dashboard" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><AdminDashboard /></div></Body>} />
             <Route path="/admin/manage-users" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><ManageUsers /></div></Body>} />
-            <Route path="/admin/attendance" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}></div></Body>} />
             <Route path="/admin/leave-requests/pending" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><LeaveRequests /></div></Body>} />
+            <Route path="/admin/faculty/:facultyId" element={<Body><Sidebar userName={userName} setUserName={setUserName} /><div style={{ flexGrow: 1 }}><FacultyDetails /> </div></Body>} />
           </Routes>
         </Router>
       </AppContainer>
