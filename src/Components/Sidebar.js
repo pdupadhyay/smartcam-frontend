@@ -60,7 +60,7 @@ const Sidebar = ({ userName, setUserName, children }) => {
         } else if (localStorage.getItem('role') === 'admin') {
             items = [
                 { text: 'Home', url: `admin/dashboard` },
-                { text: 'Manage Users', url: 'admin/manage-users' },
+                { text: 'Manage Faculty', url: 'admin/manage-users' },
                 { text: 'Leave Requests', url: 'admin/leave-requests/pending' },
                 { text: `Logout`, url: '' }
             ];

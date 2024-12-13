@@ -149,8 +149,8 @@ const LeaveRequests = () => {
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                colSpan={3}
+                                rowsPerPageOptions={[rowsPerPage, 2*rowsPerPage, 5*rowsPerPage, { label: 'All', value: -1 }]}
+                                colSpan={6}
                                 count={rows.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
@@ -160,6 +160,11 @@ const LeaveRequests = () => {
                                             'aria-label': 'rows per page',
                                         },
                                         native: true,
+                                        sx: {
+                                            '& option': {
+                                                textAlign: 'center', // Center-align the text in options
+                                            },
+                                        }
                                     },
                                 }}
                                 onPageChange={handleChangePage}

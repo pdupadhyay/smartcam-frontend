@@ -213,11 +213,17 @@ const FacultyDetails = () => {
                                             'aria-label': 'rows per page',
                                         },
                                         native: true,
+                                        sx: {
+                                            '& option': {
+                                                textAlign: 'center', // Center-align the text in options
+                                            },
+                                        }
                                     },
                                 }}
                                 onPageChange={handleChangeLeavePage}
                                 onRowsPerPageChange={handleChangeLeaveRowsPerPage}
                                 ActionsComponent={TablePaginationActions}
+                                sx={{ textAlign: 'center' }}
                             />
                         </TableRow>
                     </TableFooter>
@@ -269,6 +275,11 @@ const FacultyDetails = () => {
                                             'aria-label': 'rows per page',
                                         },
                                         native: true,
+                                        sx: {
+                                            'option': {
+                                                textAlign: 'center', // Center-align the text in options
+                                            },
+                                        }
                                     },
                                 }}
                                 onPageChange={handleChangeAttendancePage}
@@ -303,8 +314,8 @@ const FacultyDetails = () => {
                             </Button>
                         </> :
                         <Button onClick={() => navigate('/admin/manage-users')}>Done</Button>}
-            </DialogActions>
-        </Dialog>
+                </DialogActions>
+            </Dialog>
         </Container >
     );
 }
