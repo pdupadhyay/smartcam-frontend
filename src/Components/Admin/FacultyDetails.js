@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { adminURL } from "../../constants";
-import { Container, Typography, CircularProgress, Box, Table, TableBody, TableCell, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Divider, Chip, TableFooter, TablePagination, IconButton } from "@mui/material";
+import { Container, Typography, CircularProgress, Box, Table, TableBody, TableCell, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Divider, Chip, TableFooter, TablePagination } from "@mui/material";
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import dayjs from 'dayjs';
@@ -28,7 +28,7 @@ const FacultyDetails = () => {
     const fetchFaculty = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${adminURL}/${facultyId}/attendanceAndLeave`, {
+            const response = await fetch(`${adminURL}/${facultyId}/facultyDetails`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -39,8 +39,8 @@ const FacultyDetails = () => {
                 throw new Error(response.statusText);
             }
             const data = await response.json();
-            console.log(data);
             document.title = 'Faculty Details';
+            setFaculty(data.facultyData);
             setAttendanceData(data.attendanceRecords);
             setLeaveData(data.leaveDetails);
             setLoading(false);
@@ -168,6 +168,42 @@ const FacultyDetails = () => {
                     Delete Faculty
                 </Button>
             </Box>
+
+            {/* Faculty Information */}
+            <Box sx={{ my: 2 }}>
+                <Divider sx={{ my: 2 }}>
+                    <Chip label="Faculty Information" size="medium" />
+                </Divider>
+                <Table component={Paper}>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>{faculty.name}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Email</TableCell>
+                            <TableCell>{faculty.email}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Faculty ID</TableCell>
+                            <TableCell>{faculty.fid}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Gender</TableCell>
+                            <TableCell>{faculty.gender}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Date of Birth</TableCell>
+                            <TableCell>{faculty.dob}</TableCell>
+                        </TableRow>
+                        {faculty.phone && <TableRow>
+                            <TableCell>Phone Number</TableCell>
+                            <TableCell>{faculty.phone}</TableCell>
+                        </TableRow>}
+                    </TableBody>
+                </Table>
+            </Box>
+
             <Box sx={{ my: 2 }}>
                 <Divider sx={{ my: 2 }}>
                     <Chip label="Monthly Attendance Chart" size="medium" />

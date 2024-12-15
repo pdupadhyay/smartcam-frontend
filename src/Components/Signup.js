@@ -173,7 +173,6 @@ export default function SignUp() {
                     body: JSON.stringify(user),
                     credentials: 'include'
                 })
-                const data = await response.json();
                 if(response.status === 201){
                     window.location.href = '/';
                 }
