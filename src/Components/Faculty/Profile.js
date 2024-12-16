@@ -7,17 +7,6 @@ const ProfileContainer = styled(Stack)(({ theme }) => ({
     height: '100%',
     padding: 4,
     margin: 'auto',
-    backgroundColor: '#0c1017',
-    backgroundImage:
-        'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-    backgroundRepeat: 'no-repeat',
-    ...theme.applyStyles('dark', {
-        backgroundImage:
-            'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-        backgroundSize: 'cover',
-        backgroundAttachment: 'fixed'
-        // 'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-    }),
 }))
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -41,8 +30,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 const Popup = ({ open, message, onClose }) => (
     <Modal open={open} onClose={onClose}>
-        <Box sx={{fontFamily: 'cursive', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, 
-        bgcolor: 'background.paper', boxShadow: 24, p: 2, textAlign:'center'
+        <Box sx={{
+            fontFamily: 'cursive', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400,
+            bgcolor: 'background.paper', boxShadow: 24, p: 2, textAlign: 'center'
         }}>
             <p>{message}</p>
             <Button onClick={onClose} >Close</Button>
@@ -185,12 +175,12 @@ const Profile = () => {
                     newPassword: newPassword,
                 })
             })
-            if(response.status === 200){
-                setPopupMessage('Password changed successfully');
-            } else {
-                setPopupMessage('Failed to update password. Please try again.');
-            }
-            setPasswordPopupOpen(false);
+        if (response.status === 200) {
+            setPopupMessage('Password changed successfully');
+        } else {
+            setPopupMessage('Failed to update password. Please try again.');
+        }
+        setPasswordPopupOpen(false);
     }
 
     return (
@@ -241,7 +231,7 @@ const Profile = () => {
                     </Card>
                 </Stack>
             </ProfileContainer>
-            <PasswordChangePopup 
+            <PasswordChangePopup
                 open={passwordPopupOpen}
                 onClose={() => setPasswordPopupOpen(false)}
                 onSubmit={handlePasswordChange}
